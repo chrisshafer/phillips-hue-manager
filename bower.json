@@ -1,0 +1,23 @@
+{
+  "name": "HueManager",
+  "version": "0.0.1",
+  "description": "Front end for hue web manager",
+  "authors": [
+    "Chris Shafer"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "~0.13.3",
+    "skeleton": "~2.0.4",
+    "lodash": "~3.8.0",
+    "jquery": "~2.1.4",
+    "font-awesome": "~4.3.0"
+  }
+}

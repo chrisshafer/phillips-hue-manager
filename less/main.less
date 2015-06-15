@@ -1,0 +1,230 @@
+//pallete
+@border-grey: #bbb;
+@success-green: #1c972f;
+
+body{
+  padding-top: 20px;
+}
+.block{
+  width: 100%;
+}
+
+
+
+// custom full size check boxes
+.checkbox-container{
+  .noselect();
+  position: relative;
+  border: 1px solid @border-grey;
+  padding: 5px;
+  border-radius: 5px;
+
+}
+.checkbox-container span:first-child{
+  width: 80%;
+}
+.checkbox-container input[type=checkbox]{
+  width: 0;
+  height: 0;
+  margin: 0;
+}
+.checkbox-container input[type=checkbox] + span{
+  position: absolute;
+  color: @success-green;
+  opacity: 0;
+  right: 15px;
+  top: 10px;
+}
+.checkbox-container input[type=checkbox]:checked + span{
+  opacity: 1;
+}
+
+.light-manage-card{
+  border:  1px solid @border-grey;
+  padding: 15px;
+  margin: 15px;
+  border-radius: 5px;
+
+}
+// range slider
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  border-radius: 2px;
+  height: 12px;
+  border: 1px solid @border-grey;
+}
+.rainbow[type=range] {
+  // hue color gradient, close but not exact or mathematically calculated
+  // replace with actual CIE color space representation
+  background: linear-gradient( 90deg,
+  #FF0000,
+  #FF9200,
+  #FFFF00,
+  #92D050,
+  #FFFFFF,
+  #0070C0,
+  #f000ff,
+  #ff00a5,
+  #FF0000);
+}
+.brightness[type=range] {
+  background: linear-gradient( 90deg,
+  #000000,
+  #FFFFFF);
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #ffffff;
+  border: 1px solid @border-grey;
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.firefox input[type=range]::-moz-range-track {
+  border-radius: 8px;
+  height: 7px;
+  border: 1px solid @border-grey;
+  background-color: #fff;
+}
+.firefox input[type=range]::-moz-range-thumb {
+  background: #ecf0f1;
+  border: 1px solid @border-grey;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+//mixins
+.noselect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+// | computes temperature gradient
+// | practicing LESS, should be done in js
+// V
+
+// green conversion
+@green-multiplier-1 : 99.4708025861;
+@green-multiplier-2 : 288.1221695283;
+@green-subtractor   : 161.1195681661;
+@green-exponent     : -0.0755148492;
+.tempToGreen(@temp) when (@temp <= 55){
+  .log((@temp));
+
+  @green : (@green-multiplier-1 * @ln) - @green-subtractor;
+  
+  .toGreen(@inter) when (@inter > 255){ @g : 255; }
+  .toGreen(@inter) when (@inter < 0){ @g : 0; }
+  .toGreen(@inter) when (@inter >=0) and (@inter <=255) { @g : @inter; }
+  .toGreen(@green);
+
+}
+.tempToGreen(@temp) when (@temp > 55){
+  @green : @green-multiplier-2 * pow((@temp - 60), @green-exponent );
+
+  .toGreen(@inter) when (@inter > 255){ @g : 255; }
+  .toGreen(@inter) when (@inter < 0){ @g : 0; }
+  .toGreen(@inter) when (@inter >=0) and (@inter <=255) { @g : @inter; }
+  .toGreen(@green);
+}
+
+// blue conversion
+@blue-subtractor : 305.0447927307;
+@blue-multiplier : 138.5177312231;
+.tempToBlue(@temp) when (@temp >= 55){
+  @b : 255;
+}
+.tempToBlue(@temp) when (@temp < 55){
+  .log((@temp - 10));
+
+  @blue :  (@blue-multiplier * @ln) - @blue-subtractor;
+
+  .toBlue(@inter) when (@inter > 255){ @b : 255; }
+  .toBlue(@inter) when (@inter < 0){ @b : 0; }
+  .toBlue(@inter) when (@inter >=0) and (@inter <=255) { @b : @inter; }
+  .toBlue(@blue);
+}
+
+// red conversion
+@red-multiplier : 329.698727446;
+@red-exponent : -0.1332047592;
+.tempToRed(@temp) when (@temp <= 55) {
+  @r : 255;
+}
+.tempToRed(@temp) when (@temp > 55) {
+   @red : @red-multiplier * pow((@temp - 60), @red-exponent );
+
+  .toRed(@inter) when (@inter > 255){ @r : 255; }
+  .toRed(@inter) when (@inter < 0){ @r : 0; }
+  .toRed(@inter) when (@inter >=0) and (@inter <=255) { @r : @inter; }
+  .toRed(@red);
+}
+
+// no log function, so use tailor series
+.log(@variable){
+  @x : (@variable - 1) / ( @variable + 1) ;
+  @ln :  (@x + (pow(@x, 3)/3.0) + (pow(@x,5)/5.0) + (pow(@x,7)/7.0) + (pow(@x,9)/9.0))*2
+}
+
+.tempToRgb(@temperature){
+  .tempToRed(@temperature/100);
+  .tempToBlue(@temperature/100);
+  .tempToGreen(@temperature/100);
+  @output-temp : rgb(@r,@g,@b);
+}
+
+.color1(){
+  .tempToRgb(6500);
+  @temp-1 : @output-temp;
+}
+.color2(){
+  .tempToRgb(5600);
+  @temp-2 : @output-temp;
+}
+.color3(){
+  .tempToRgb(4700);
+  @temp-3 : @output-temp;
+}
+.color4(){
+  .tempToRgb(3800);
+  @temp-4 : @output-temp;
+}
+.color5(){
+  .tempToRgb(2900);
+  @temp-5 : @output-temp;
+}
+.color6(){
+  .tempToRgb(2000);
+  @temp-6 : @output-temp;
+}
+.color1();
+.color2();
+.color3();
+.color4();
+.color5();
+.color6();
+
+.temperature[type=range] {
+  background: linear-gradient( 90deg,
+  @temp-1,
+  @temp-2,
+  @temp-3,
+  @temp-4,
+  @temp-5,
+  @temp-6
+  );
+}
+
+
+
+
